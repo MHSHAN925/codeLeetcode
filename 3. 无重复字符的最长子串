@@ -1,1 +1,45 @@
+题目：给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+解法：定义两个指针 i，j，表示当前处理到的子串是 [i,j]，[i,j] 始终满足无重复字符。
+      从前往后进行扫描，同时维护一个哈希表记录 [i,j] 中每个字符出现的次数。
+      遍历过程中，j 不断自增，同时将第 j 个字符在哈希表中出现的次数加一。
+      当满足 map.get(r) > 1 代表此前出现过第 j 位对应的字符。此时应该更新 i 的位置（使其右移），直到不满足 map.get(r) > 1 ，代表 [i,j] 恢复满足无重复字符的条件。
+代码：
+      import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * 给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+ * 定义两个指针 i，j，表示当前处理到的子串是 [i,j]，[i,j] 始终满足无重复字符。
+ *
+ * 从前往后进行扫描，同时维护一个哈希表记录 [i,j] 中每个字符出现的次数。
+ *
+ * 遍历过程中，j 不断自增，同时将第 j 个字符在哈希表中出现的次数加一。
+ *
+ * 当满足 map.get(r) > 1 代表此前出现过第 j 位对应的字符。此时应该更新 i 的位置（使其右移），直到不满足 map.get(r) > 1 ，代表 [i,j] 恢复满足无重复字符的条件。
+ *
+ * 同时使用 [i,j] 长度更新最大长度。
+ */
+public class LengthOfLongest {
+    public static void main(String[] args) {
+        String s = "abcabcbb";
+        System.out.println(lengthOfLongestSubstring(s));
+
+    }
+
+    public static int lengthOfLongestSubstring(String s){
+        Map<Character, Integer> map = new HashMap<>();
+        int ans = 0;
+        for (int i = 0, j = 0; j < s.length(); j++){
+            char charRight = s.charAt(j);
+            //getOrDefault函数，如果key有则返回value，如果没有则返回默认值
+            map.put(charRight, map.getOrDefault(charRight, 0) + 1);
+            while (map.get(charRight) > 1){
+                char charLeft = s.charAt(i);
+                map.put(charLeft, map.get(charLeft) - 1);
+                i++;
+            }
+            ans = Math.max(ans, j - i + 1);
+        }
+        return ans;
+    }
+}
